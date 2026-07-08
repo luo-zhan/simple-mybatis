@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.luozhan.simplemybatis.e2e.UserMapper">
+
+    <!-- 覆盖 XML XNode 入口 + CDATA 全包裹：增强语法在 CDATA 内正常工作 -->
+    <select id="findByAgeCData" resultType="io.github.luozhan.simplemybatis.e2e.User"><![CDATA[
+        select * from t_user
+        #where age >= :minAge
+        #and name like %:name%
+        order by id
+    ]]></select>
+
+    <!-- 逃生舱：显式指定原生 XMLLanguageDriver，跳过增强预处理 -->
+    <select id="rawFind"
+            lang="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver"
+            resultType="io.github.luozhan.simplemybatis.e2e.User">
+        select * from t_user where id = #{id}
+    </select>
+
+</mapper>
