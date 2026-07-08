@@ -2,15 +2,15 @@
 
 > **告别 `<if>`/`<where>`/`<foreach>` 标签地狱——用最自然的写法，写最干净的动态 SQL。**
 
-一个 MyBatis `LanguageDriver` 增强：在**启动期**把简洁语法翻译为标准 MyBatis 动态 SQL，运行期**零额外开销**。仅依赖 MyBatis
-核心，无 jsqlparser 等第三方库，即插即用。
+一个 MyBatis `LanguageDriver` 增强：在**启动期**把简洁语法翻译为标准 MyBatis 动态 SQL，运行期**零额外开销**。仅依赖 MyBatis 核心，无 jsqlparser 等第三方库，即插即用。
 
 ---
 
 ## 先看效果
 
-### xml 对比
 
+
+###  xml 对比
 两边等价
 <table>
 <tr>
@@ -19,7 +19,6 @@
 **simple-mybatis** 🚀
 
 ```xml
-
 <select id="findUsers" resultType="User"><![CDATA[
     select * from t_user
     # where id = :id
@@ -29,7 +28,6 @@
     order by id
 ]]></select>
 ```
-
 1. 代码少60%，可读性更高
 2. 拷贝到DB软件中直接可运行，#变注释
 3. CDATA全包裹，转义简单
@@ -40,10 +38,9 @@
 **原生 MyBatis** 😩
 
 ```xml
-
 <select id="findUsers" resultType="User">
     select * from t_user
-
+   
     <where>
         <if test="id != null">
             and id = #{id}
@@ -53,7 +50,7 @@
             and name like #{namePattern}
         </if>
         <if test="minAge != null">
-            and age <![CDATA[ > ]]> #{minAge}
+             and age <![CDATA[ > ]]> #{minAge}
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and status in
@@ -67,12 +64,12 @@
 </select>
 ```
 
+
 </td>
 </tr>
 </table>
 
 ### 注解对比
-
 两边等价：
 <table>
 <tr>
@@ -81,11 +78,9 @@
 **simple-mybatis** 🚀
 
 ```java
-
 @Select("select * from t_user #where id = :id and name like %:name%")
 List<User> find(@Param("id") Long id, @Param("name") String name);
 ```
-
 动态sql在原生注解中几乎是没眼看的状态，而simple-mybatis只需要一个`#`则将where后的条件自动转动态条件
 
 </td>
@@ -94,7 +89,6 @@ List<User> find(@Param("id") Long id, @Param("name") String name);
 **原生 MyBatis** 😩
 
 ```java
-
 @Select("""
         <script>
         select * from t_user
@@ -110,30 +104,30 @@ List<User> find(@Param("id") Long id, @Param("name") String name);
 List<User> find(@Param("id") Long id, @Param("name") String name);
 ```
 
+
 </td>
 </tr>
 </table>
 
 
-**而且——这条 SQL 可以直接复制到数据库工具里执行。** `#` 开头的行在数据库看来就是注释，自动忽略，剩下的
-`select * from t_user order by id` 直接能跑。再也不用手动删 `<if>` 标签了。
+**而且——这条 SQL 可以直接复制到数据库工具里执行。** `#` 开头的行在数据库看来就是注释，自动忽略，剩下的 `select * from t_user order by id` 直接能跑。再也不用手动删 `<if>` 标签了。
 
 ---
 
 ## 为什么选 simple-mybatis
 
-| 痛点            | 原生 MyBatis                        | simple-mybatis                         |
-|---------------|-----------------------------------|----------------------------------------|
-| 动态条件          | `<if test="...">` 包裹，嵌套深          | `#and col = :col`，一行搞定                 |
-| 参数占位          | `#{name}`                         | `:name`（更短，少敲键）                        |
-| LIKE 模糊查询     | `<bind>` + `<if>` 多行              | `like %:name%`（直觉写法）                   |
-| IN 集合         | `<foreach>` 标签 5 行                | `in (:list)` 一行                        |
-| 动态 UPDATE SET | `<set>` + `<if>` 嵌套               | `#set col = :val,` 逗号模式                |
-| 自定义条件         | `<if test="a != null and a > 0">` | `#(a != null && a > 0)` 支持 `&&`/`\|\|` |
-| XML 转义        | `<`、`>`、`&` 要转义，CDATA 里标签又失效      | CDATA 全包裹，**零转义**                      |
-| 拷到 DB 工具调试    | 手动删标签改参数                          | 直接粘贴，`#` 行自动当注释                        |
-| 运行时性能         | 原生                                | **完全一致**（启动期翻译，运行期走原生）                 |
-| 第三方依赖         | —                                 | **零**（仅 MyBatis 核心，`provided`）         |
+| 痛点 | 原生 MyBatis | simple-mybatis |
+|------|-------------|----------------|
+| 动态条件 | `<if test="...">` 包裹，嵌套深 | `#and col = :col`，一行搞定 |
+| 参数占位 | `#{name}` | `:name`（更短，少敲键） |
+| LIKE 模糊查询 | `<bind>` + `<if>` 多行 | `like %:name%`（直觉写法） |
+| IN 集合 | `<foreach>` 标签 5 行 | `in (:list)` 一行 |
+| 动态 UPDATE SET | `<set>` + `<if>` 嵌套 | `#set col = :val,` 逗号模式 |
+| 自定义条件 | `<if test="a != null and a > 0">` | `#(a != null && a > 0)` 支持 `&&`/`\|\|` |
+| XML 转义 | `<`、`>`、`&` 要转义，CDATA 里标签又失效 | CDATA 全包裹，**零转义** |
+| 拷到 DB 工具调试 | 手动删标签改参数 | 直接粘贴，`#` 行自动当注释 |
+| 运行时性能 | 原生 | **完全一致**（启动期翻译，运行期走原生） |
+| 第三方依赖 | — | **零**（仅 MyBatis 核心，`provided`） |
 
 ---
 
@@ -142,7 +136,6 @@ List<User> find(@Param("id") Long id, @Param("name") String name);
 **1. 添加依赖**
 
 ```xml
-
 <dependency>
     <groupId>io.github.luo-zhan</groupId>
     <artifactId>simple-mybatis</artifactId>
@@ -175,9 +168,10 @@ List<User> find(@Param("id") Long id, @Param("name") String name);
 **simple-mybatis**
 
 ```sql
-select *
-from t_user #where id = :id #and name = : name
-    #and status in (:statusList)
+select * from t_user
+#where id = :id
+#and name = :name
+#and status in (:statusList)
 ```
 
 </td>
@@ -186,7 +180,6 @@ from t_user #where id = :id #and name = : name
 **原生 MyBatis**
 
 ```xml
-
 <select id="find" resultType="User">
     select * from t_user
     <where>
@@ -219,10 +212,10 @@ from t_user #where id = :id #and name = : name
 **simple-mybatis**
 
 ```sql
-select *
-from t_user
-where deleted = 0 -- 恒在的静态条件
-    #and id = :id -- 动态条件跟随 #and name like %: name%
+select * from t_user
+where deleted = 0          -- 恒在的静态条件
+#and id = :id              -- 动态条件跟随
+#and name like %:name%
 ```
 
 </td>
@@ -231,7 +224,6 @@ where deleted = 0 -- 恒在的静态条件
 **原生 MyBatis**
 
 ```xml
-
 <select id="find" resultType="User">
     select * from t_user
     where deleted = 0
@@ -257,8 +249,8 @@ where deleted = 0 -- 恒在的静态条件
 
 ```sql
 update t_user
-    #set name = : name,
-    #age = :age,
+#set name = :name,
+#age = :age,
 where id = :id
 ```
 
@@ -270,7 +262,6 @@ where id = :id
 **原生 MyBatis**
 
 ```xml
-
 <update id="update">
     update t_user
     <set>
@@ -295,18 +286,8 @@ where id = :id
 
 ```sql
 #and name like %:name%     -- 绑定值 %name%
-#and
-code
-like
-:
-code
-% -- 绑定值 code%
-#and
-tail
-like
-%
-:
-tail -- 绑定值 %tail
+#and code like :code%      -- 绑定值 code%
+#and tail like %:tail      -- 绑定值 %tail
 ```
 
 用 `<bind>` 实现，跨数据库安全
@@ -317,14 +298,13 @@ tail -- 绑定值 %tail
 **原生 MyBatis**
 
 ```xml
-
 <bind name="namePattern" value="'%' + name + '%'"/>
 <if test="name != null and name != ''">
-and name like #{namePattern}
+    and name like #{namePattern}
 </if>
 <bind name="codePattern" value="code + '%'"/>
 <if test="code != null and code != ''">
-and code like #{codePattern}
+    and code like #{codePattern}
 </if>
 ```
 
@@ -354,7 +334,6 @@ and code like #{codePattern}
 **原生 MyBatis**
 
 ```xml
-
 <if test="statusList != null
           and statusList.size() > 0">
     and status in
@@ -391,7 +370,6 @@ and code like #{codePattern}
 **原生 MyBatis**
 
 ```xml
-
 <if test="id != null and id > 0">
     and id = #{id}
 </if>
@@ -412,7 +390,6 @@ and code like #{codePattern}
 **simple-mybatis**
 
 ```xml
-
 <select id="find" resultType="User"><![CDATA[
     select * from t_user
     where age > 10
@@ -429,12 +406,11 @@ CDATA 全包裹，`<` `>` `&` 直接写，零转义
 **原生 MyBatis**
 
 ```xml
-
 <select id="find" resultType="User">
     select * from t_user
     where age &gt; 10
-    and type &lt;&gt; 'a'
-    and score &gt;= #{minScore}
+      and type &lt;&gt; 'a'
+      and score &gt;= #{minScore}
 </select>
 ```
 
@@ -450,8 +426,7 @@ CDATA 全包裹，`<` `>` `&` 直接写，零转义
 ## 设计理念
 
 - **超集兼容**：不使用新语法的 SQL 行为完全不变，完全兼容原生语法（甚至可以混用，但不推荐）
-- **启动期翻译**：所有增强语法在 MyBatis 初始化时翻译为标准 `<if>`/`<where>`/`<set>`/`<foreach>`/`<bind>` + `#{}`，运行期与原生
-  MyBatis 完全一致
+- **启动期翻译**：所有增强语法在 MyBatis 初始化时翻译为标准 `<if>`/`<where>`/`<set>`/`<foreach>`/`<bind>` + `#{}`，运行期与原生 MyBatis 完全一致
 - **行级边界**：`#`动态标记的作用范围是到行尾，简单易懂
 - **DMS 友好**：`#` 行在数据库工具中被视为注释，SQL 可直接粘贴调试
 - **可扩展**：`Directive` SPI + `ServiceLoader`，支持接入自定义指令
@@ -460,13 +435,13 @@ CDATA 全包裹，`<` `>` `&` 直接写，零转义
 
 ## 兼容性
 
-| 项       | 值                                   |
-|---------|-------------------------------------|
-| Java    | 8+                                  |
-| MyBatis | 3.2.0 ~ 3.5.x（实测 3.5.x，建议 3.4.6+）   |
-| 第三方依赖   | 无（MyBatis 核心 `provided`）            |
-| 入口      | XML Mapper · `@Select`/`@Update` 注解 |
-| 逃生舱     | 单条语句可用 `lang` / `@Lang` 跳过增强        |
+| 项 | 值 |
+|---|---|
+| Java | 8+ |
+| MyBatis | 3.2.0 ~ 3.5.x（实测 3.5.x，建议 3.4.6+） |
+| 第三方依赖 | 无（MyBatis 核心 `provided`） |
+| 入口 | XML Mapper · `@Select`/`@Update` 注解 |
+| 逃生舱 | 单条语句可用 `lang` / `@Lang` 跳过增强 |
 
 ---
 
