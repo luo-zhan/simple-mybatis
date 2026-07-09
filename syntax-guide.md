@@ -1,4 +1,4 @@
-# MyBatisGX SQL 增强语法指南
+# simple-mybatis语法指南
 
 ## 1. 一句话介绍
 
@@ -26,7 +26,7 @@
 </select>
 ```
 
-### MyBatisGX 增强语法
+### 简化语法
 语法符合直觉，可以直接代替原myabtis语法，拷贝到db可以直接运行
 
 ```xml
@@ -119,7 +119,7 @@ List<User> find(@Param("id") Long id, @Param("name") String name);
 <if test="id != null"> id = #{id} </if>
 <if test="name != null and name != ''"> and name = #{name} </if>
 ```
-
+当然，如果你不习惯这种写法，也可以用原生的`#{param}`
 ### 3.3 where 自动处理
 
 你只需写自然 SQL，`where`、`and`、`or` 关键字和由框架自动处理：
@@ -292,7 +292,7 @@ select * from user
 
 ---
 ## 6. 最佳实践
-### 6.1 静态条件
+### 6.1 静态条件紧靠where
 有静态条件时推荐where后先写静态条件，这样拷贝sql到db时不用修改语句
 ```sql
 select * from user
@@ -307,24 +307,49 @@ select * from user
 # and name = :name
 and status = 1
 ```
-运行是一样的，但是下面这条sql如果拷贝到db软件需要修改语句才能执行
+运行结果是一样的（条件位置顺序不影响sql性能），但是后者拷贝到db软件需要修改语句才能执行
 
-### 6.2 注解 vs xml
+### 6.2 多行sql共用一个判断条件
+原生语法如下所示：
+```xml
+<select id="findUsers">
+    select * from user where 1=1
+    <if test="status == 1">  
+        and id = #{id} 
+        and name = #{name} 
+    </if>
+</select>
+```
+在增强语法中，建议写在一行（推荐，语义更好）：
+```sql
+select * from user where 1=1
+#(status == 1) and id = :id  and name = :name
+```
+或者多行分别定义一次判断条件：
+```sql
+select * from user where 1=1
+# (status == 1) and id = :id  
+# (status == 1) and name = :name
+```
+### 6.3 注解 vs xml
 
-sql简单，优先使用注解：
+sql简单，优先使用注解，一个`#where`就所有查询条件自动动态化（静态条件不受影响）：
 ```java
 @Select("select id, name from user #where id = :id and name like %:name% ")
 List<User> findUsers(Long id, String name);
 ```
 sql较长或者复杂，推荐XML，一行sql一个条件：
 
-```xml
+```sql
 <select id="findUsers" resultType="User">
     select * from user
     # where id = :id
     # and name like %:name%
     # and status in (:statusList)
-    and store_id in (select store_id from store where name = :storeName)
+    and store_id in (
+        select store_id from store 
+        # where name = :storeName
+    )
 </select>
 ```
 jdk15之后有了多行字符串，根据个人喜好也可以将比较长的sql写在注解中
@@ -341,27 +366,42 @@ List<User> findUsers(Long id, String name);
 
 ---
 
-## 7. 与原生 MyBatis 混用
+## 7. 极强的兼容性
 
-增强语法是原生语法的超集，以下写法不会受影响：
+增强语法是原生语法的**超集**，以下原生写法不会受影响：
 
 ```sql
 select * from user where id = #{id}
 ```
 
-也可以在同一条 SQL 中混用（可以但不推荐）：
+甚至可以在同一条 SQL 中混用：
 
 ```sql
 select * from user
 <where>
-    <if test="id != null">
-        id = #{id}
-     </if>
-    #and name = :name
+    #name = #{name}
+    #and id = :id
+    <if test="age != null">
+        and age = :age
+    </if>
 </where>
 ```
-
----
+生成结果：
+```xml
+select * from user
+<where>
+    <if test="name != null and name != ''">
+        name = #{name}
+    </if>
+    <if test="id != null and id != ''">
+        and id = #{id}
+    </if>
+    <if test="age != null">
+        and age = #{age}
+    </if>
+</where>
+```
+但不推荐混用，有可能产生冲突，仅在出现增强语法无法实现时临时使用，并反馈issue到github
 
 
 ## 8. 逃生舱
@@ -384,6 +424,6 @@ select * from user
 @Select("select * from user where col::int = #{value}")
 User rawSql(Integer value);
 ```
-同时将问题反馈issue给我们
+同时将问题反馈issue到github
 > `XMLLanguageDriver"` 是MyBatis默认实现
 

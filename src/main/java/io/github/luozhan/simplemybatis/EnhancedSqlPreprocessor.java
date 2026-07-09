@@ -195,7 +195,7 @@ public class EnhancedSqlPreprocessor {
                 i++;
                 continue;
             }
-            if (depth == 0 && c == '#' && !(i + 1 < n && line.charAt(i + 1) == '{')) {
+            if (depth >= 0 && c == '#' && !(i + 1 < n && line.charAt(i + 1) == '{')) {
                 addSeg(segs, directive, line.substring(start, i));
                 start = i;
                 directive = true;

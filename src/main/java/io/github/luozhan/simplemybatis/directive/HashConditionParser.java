@@ -158,6 +158,12 @@ public class HashConditionParser {
 
         // 通用：between 也走此路（其两个 :param 均被收集，任一为空整体省略）
         List<String> params = SqlScanner.collectParams(cond);
+        // 兼容原生 #{expr} / ${expr} 占位符的判空支持
+        for (String p : SqlScanner.collectNativeParams(cond)) {
+            if (!params.contains(p)) {
+                params.add(p);
+            }
+        }
         String converted = escapeContent(SqlScanner.convertColonParams(cond).getText());
         if (params.isEmpty()) {
             // 无参数 —— 视为静态条件，不包 <if>

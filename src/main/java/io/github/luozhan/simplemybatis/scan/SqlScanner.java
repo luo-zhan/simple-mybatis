@@ -109,6 +109,65 @@ public final class SqlScanner {
     }
 
     /**
+     * 收集文本中 {@code #{expr}} 和 {@code ${expr}} 原生占位符的参数表达式
+     * （取首个 {@code ,} 前的内容，兼容 {@code #{name,jdbcType=VARCHAR}} 写法）。
+     * 用于增强语法对原生占位符的判空支持。
+     */
+    public static List<String> collectNativeParams(String text) {
+        List<String> params = new ArrayList<>();
+        int n = text.length();
+        int i = 0;
+        while (i < n) {
+            char c = text.charAt(i);
+            if (c == '\'') {
+                i++;
+                while (i < n) {
+                    char ch = text.charAt(i);
+                    i++;
+                    if (ch == '\'') {
+                        if (i < n && text.charAt(i) == '\'') {
+                            i++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                continue;
+            }
+            if ((c == '#' || c == '$') && i + 1 < n && text.charAt(i + 1) == '{') {
+                int start = i + 2;
+                int j = start;
+                int depth = 1;
+                int exprEnd = -1;
+                while (j < n && depth > 0) {
+                    char ch = text.charAt(j);
+                    if (ch == '{') {
+                        depth++;
+                    } else if (ch == '}') {
+                        depth--;
+                        if (depth == 0) {
+                            if (exprEnd < 0) {exprEnd = j;}
+                            break;
+                        }
+                    } else if (ch == ',' && depth == 1 && exprEnd < 0) {
+                        exprEnd = j;
+                    }
+                    j++;
+                }
+                if (exprEnd < 0) {exprEnd = j;}
+                String expr = text.substring(start, exprEnd).trim();
+                if (!expr.isEmpty() && isIdentStart(expr.charAt(0))) {
+                    params.add(expr);
+                }
+                i = j + 1;
+                continue;
+            }
+            i++;
+        }
+        return params;
+    }
+
+    /**
      * 从下标 {@code start}（指向起始引号）拷贝一个字符串字面量到 out，返回结束后的下标。
      */
     private static int copyStringLiteral(String text, int start, StringBuilder out) {

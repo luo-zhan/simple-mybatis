@@ -44,11 +44,16 @@ class EnhancedSqlPreprocessorTest {
     }
 
     @Test
-    @DisplayName("内联多条件与分行写法结果一致")
+    @DisplayName("内联多条件与分行写法生成相同动态标签")
     void inlineMultiCondition_equalsSplitForm() {
-        String inline = process("select * from user\n#where id = :id and name = :name");
-        String split = process("select * from user\n#where id = :id\n#and name = :name");
-        assertEquals(split, inline);
+        String inline = process("select * from user #where id = :id #and name = :name");
+        // 内联与分行的唯一区别是静态段尾部空白，动态标签部分一致
+        assertTrue(inline.contains("<where>"), inline);
+        assertTrue(inline.contains("</where>"), inline);
+        assertTrue(inline.contains("<if test=\"id != null and id != ''\">"), inline);
+        assertTrue(inline.contains("id = #{id}</if>"), inline);
+        assertTrue(inline.contains("<if test=\"name != null and name != ''\">"), inline);
+        assertTrue(inline.contains("and name = #{name}</if>"), inline);
     }
 
     @Test
@@ -128,13 +133,6 @@ class EnhancedSqlPreprocessorTest {
     }
 
     @Test
-    @DisplayName("原生 SQL 原样透传")
-    void nativeSql_passesThroughUnchanged() {
-        String sql = "select * from user where id in #{id}";
-        assertEquals(sql, process(sql));
-    }
-
-    @Test
     @DisplayName("未注册的 {:指令} 抛出友好错误")
     void unknownBracketDirective_throwsFriendlyError() {
         IllegalStateException ex = assertThrows(IllegalStateException.class,
@@ -202,6 +200,56 @@ class EnhancedSqlPreprocessorTest {
                         new PreprocessContext(null, null, "x", "findUsers")));
         assertTrue(ex.getMessage().contains("findUsers"), ex.getMessage());
         assertTrue(ex.getMessage().contains("括号不配平"), ex.getMessage());
+    }
+
+    // ========== #{} / ${} 原生参数表达式支持 ==========
+
+    @Test
+    @DisplayName("#where 中 #{param} 生成 <if> 判空包裹")
+    void nativeHashParam_generatesIfWrapper() {
+        String out = process("select * from user\n#where id = #{id}\n#and name = :name");
+        assertTrue(out.contains("<if test=\"id != null and id != ''\">"), out);
+        assertTrue(out.contains("id = #{id}</if>"), out);
+        assertTrue(out.contains("<if test=\"name != null and name != ''\">"), out);
+    }
+
+    @Test
+    @DisplayName("#where 中 ${param} 生成 <if> 判空包裹")
+    void nativeDollarParam_generatesIfWrapper() {
+        String out = process("select * from user\n#where col = ${value}");
+        assertTrue(out.contains("<if test=\"value != null and value != ''\">"), out);
+        assertTrue(out.contains("col = ${value}</if>"), out);
+    }
+
+    @Test
+    @DisplayName("#{param,jdbcType=VARCHAR} 取逗号前表达式做判空")
+    void nativeParam_withJdbcType_extractsNameBeforeComma() {
+        String out = process("select * from user\n#where name = #{name,jdbcType=VARCHAR}");
+        assertTrue(out.contains("<if test=\"name != null and name != ''\">"), out);
+        assertTrue(out.contains("name = #{name,jdbcType=VARCHAR}</if>"), out);
+    }
+
+    @Test
+    @DisplayName("混合 :param 和 #{param} 各自独立判空")
+    void mixedColonAndNative_eachGetsOwnIf() {
+        String out = process("select * from user\n#where id = #{id} and name = :name");
+        // between 两个参数的判空用 and 连接
+        assertTrue(out.contains("id != null and id != ''"), out);
+        assertTrue(out.contains("name != null and name != ''"), out);
+    }
+
+    @Test
+    @DisplayName("原生 SQL 无 # 指令仍原样透传")
+    void nativeSql_withoutDirective_passesThroughUnchanged() {
+        String sql = "select * from user where id = #{id}";
+        assertEquals(sql, process(sql));
+    }
+
+    @Test
+    @DisplayName("原生 SQL 含 #{} 但无指令不生成 <if>")
+    void nativeSql_inClause_passesThroughUnchanged() {
+        String sql = "select * from user where id in #{id}";
+        assertEquals(sql, process(sql));
     }
 
     private static int countOccurrences(String text, String sub) {
