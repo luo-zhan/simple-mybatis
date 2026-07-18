@@ -40,4 +40,19 @@ public interface UserMapper {
      */
     @Select("select * from t_user #where deleted = 0  and id = :id")
     List<User> findActive(@Param("id") Long id);
+
+    /**
+     * 验证：XML 中省略 resultType，由 MyBatis 从接口方法自动推断。
+     */
+    List<User> findByAgeNoResultType(@Param("minAge") Integer minAge);
+
+    /**
+     * XML 定义的方法（对应 UserXmlMapper.xml 中的语句）。
+     */
+    List<User> findByAgeCData(@Param("minAge") Integer minAge, @Param("name") String name);
+
+    /**
+     * 逃生舱测试方法。
+     */
+    List<User> rawFind(@Param("id") Long id);
 }

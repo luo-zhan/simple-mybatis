@@ -18,4 +18,11 @@
         select * from t_user where id = #{id}
     </select>
 
+    <!-- 验证：省略 resultType，由 MyBatis 从 Mapper 接口方法自动推断 -->
+    <select id="findByAgeNoResultType"><![CDATA[
+        select * from t_user
+        #where age >= :minAge
+        order by id
+    ]]></select>
+
 </mapper>

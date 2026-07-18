@@ -161,7 +161,7 @@ class EnhancedSyntaxE2ETest {
         try (SqlSession s = factory.openSession(true)) {
             Map<String, Object> p = new HashMap<>();
             p.put("minAge", 30);
-            List<User> r = s.selectList("xmltest.findByAgeCData", p);
+            List<User> r = s.selectList("io.github.luozhan.simplemybatis.e2e.UserMapper.findByAgeCData", p);
             assertEquals(2, r.size()); // age>=30 → 李四(30)、王五(40)
         }
     }
@@ -172,9 +172,22 @@ class EnhancedSyntaxE2ETest {
         try (SqlSession s = factory.openSession(true)) {
             Map<String, Object> p = new HashMap<>();
             p.put("id", 1);
-            List<User> r = s.selectList("xmltest.rawFind", p);
+            List<User> r = s.selectList("io.github.luozhan.simplemybatis.e2e.UserMapper.rawFind", p);
             assertEquals(1, r.size());
             assertEquals("张三", r.get(0).getName());
+        }
+    }
+
+    @Test
+    @DisplayName("XML 省略 resultType：从 Mapper 接口方法自动推断返回类型")
+    void xmlOmitResultType_autoInferred() {
+        try (SqlSession s = factory.openSession(true)) {
+            UserMapper m = s.getMapper(UserMapper.class);
+            // minAge=30 → 李四(30)、王五(40)
+            List<User> r = m.findByAgeNoResultType(30);
+            assertEquals(2, r.size());
+            // 确认结果正确映射为 User 对象（而非 Map）
+            assertEquals("李四", r.get(0).getName());
         }
     }
 
