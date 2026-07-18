@@ -1,158 +1,85 @@
-# simple-mybatis
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%"
+       alt="simple-mybatis：用一个 # 号写完动态 SQL，启动期翻译为原生 MyBatis 语法">
+</p>
 
-> **告别 `<if>`/`<where>`/`<foreach>` 标签地狱——用最自然的方式，写最干净的动态 SQL。**
-
-一个 MyBatis `LanguageDriver` 增强插件：在**启动期**渲染成原生语法，运行期**零额外开销**。仅依赖 MyBatis 核心，无第三方库，即插即用，兼容其他mybatis框架。
-
----
-
-## 先看效果
-
-> 下面对比的 simple-mybatis 语法和 MyBatis 原生语法完全等价
-
-###  xml 对比
-
-#### simple-mybatis 🚀
-
-```xml
-<select id="findUsers" resultType="User"><![CDATA[
-    select * from t_user
-    # where id = :id
-    # and name like %:name%
-    # and age > :minAge
-    # and status in (:statusList)
-    order by id
-]]></select>
-```
-
-
-
-#### 原生 MyBatis 🐢
-
-
-```xml
-<select id="findUsers" resultType="User">
-    select * from t_user
-    <where>
-        <if test="id != null">
-            and id = #{id}
-        </if>
-        <if test="name != null and name != ''">
-            <bind name="namePattern" value="'%' + name + '%'"/>
-            and name like #{namePattern}
-        </if>
-        <if test="minAge != null">
-             and age <![CDATA[ > ]]> #{minAge}
-        </if>
-        <if test="statusList != null and statusList.size() > 0">
-            and status in
-            <foreach collection="statusList" item="i"
-                     open="(" separator="," close=")">
-                #{i}
-            </foreach>
-        </if>
-    </where>
-    order by id
-</select>
-```
-
-
-
-
-### 注解对比
-
-
-#### simple-mybatis 🚀
-
-```java
-@Select("select * from t_user #where id = :id and name like %:name%")
-List<User> find(@Param("id") Long id, @Param("name") String name);
-```
-只需要一个`#`则将where后的sql条件自动转动态条件
-
-
-
-#### 原生 MyBatis 🐢
-
-```java
-@Select("""
-        <script>
-        select * from t_user
-        <where>
-            <if test='id != null'>AND id = #{id}</if>
-            <if test='name != null and name != ""'>
-                <bind name='namePattern' value="'%' + name + '%'"/>
-                AND name LIKE #{namePattern}
-            </if>
-        </where>
-        </script>
-        """)
-List<User> find(@Param("id") Long id, @Param("name") String name);
-```
-几乎没人会用注解写动态sql
-
-
-
-## 为什么选 simple-mybatis
-如果你也有这些痛点：
-1. **书写&阅读困难**： xml 动态sql代码冗余，一个in语句写 5 行
-2. **sql调试不便**：sql拷贝到DB软件中调试要挨个删标签，很不方便
-3. **XML转义恶心**: 遇到 `<`、`>` 要么用CDATA挨个转义，要么用&号转义，繁琐
-
-| 痛点 | 原生 MyBatis | simple-mybatis |
-|------|-------------|----------------|
-| 动态条件 | `<if test="...">` 包裹，嵌套深 | `#and col = :col`，一行搞定 |
-| 参数占位 | `#{name}` | `:name`（更短，少敲键） |
-| LIKE 模糊查询 | `<bind>` + `<if>` 多行 | `like %:name%`（直觉写法） |
-| IN 集合 | `<foreach>` 标签 5 行 | `in (:list)` 一行 |
-| 动态 UPDATE SET | `<set>` + `<if>` 嵌套 | `#set col = :val,` 逗号模式 |
-| 自定义条件 | `<if test="a != null and a > 0">` | `#(a != null && a > 0)` 支持 `&&`/`\|\|` |
-| XML 转义 | `<`、`>`、`&` 要转义，CDATA 里标签又失效 | CDATA 全包裹，**零转义** |
-| 拷到 DB 工具调试 | 手动删标签改参数 | 直接粘贴，`#` 行自动当注释 |
-| 运行时性能 | 原生 | **完全一致**（启动期翻译，运行期走原生） |
-| 第三方依赖 | — | **零**（仅 MyBatis 核心，`provided`） |
+<p align="center">
+  <b>MyBatis LanguageDriver 增强插件</b> ·
+  <a href="#30-秒上手">30 秒上手</a> ·
+  <a href="#语法速览">语法速览</a> ·
+  <a href="#工作原理">工作原理</a> ·
+  <a href="syntax-guide.md">详细语法</a>
+</p>
 
 ---
 
 ## 30 秒上手
 
-### **1. 添加依赖**
+**1. 加依赖**
 
 ```xml
 <dependency>
-    <groupId>io.github.luo-zhan</groupId>
-    <artifactId>simple-mybatis</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+  <groupId>io.github.luo-zhan</groupId>
+  <artifactId>simple-mybatis</artifactId>
+  <version>0.1.0</version>
 </dependency>
 ```
 
-### **2. 全局启用**（一行配置，所有 SQL 自动增强）
+**2. 一行配置全局启用**（存量 SQL 完全兼容，不改一行也能运行）
 
 ```xml
 <!-- mybatis-config.xml -->
 <settings>
-    <setting name="defaultScriptingLanguage"
-             value="io.github.luozhan.simplemybatis.EnhancedLanguageDriver"/>
+  <setting name="defaultScriptingLanguage"
+           value="io.github.luozhan.simplemybatis.EnhancedLanguageDriver"/>
 </settings>
 ```
 
-### **3. 开始写 SQL**
-注解和 XML 都支持，存量原生 SQL 完全兼容，不改动也能正常运行，也兼容其他 MyBatis 框架
+**3. 开始写**
 
+```xml
+<select id="findUsers" resultType="User"><![CDATA[
+  select * from t_user
+  # where id = :id
+  # and name like %:name%
+  # and status in (:statusList)
+  order by id
+]]></select>
+```
+
+参数为空的行自动省略；集合、字符串、null 一起判空；`#` 在 DMS 里天然是注释——**粘进数据库工具直接可跑**。
+
+---
+
+## 为什么值得用
+
+| 痛点 | 原生 MyBatis                      | simple-mybatis              |
+|---|---------------------------------|-----------------------------|
+| 动态条件 | `<if test="...">` 3行            | `# and col = :col`，一行       |
+| LIKE 模糊 | `<bind>` + `<if>` 4行            | `like %:name%`一行            |
+| IN 集合 | `<foreach>` 5行                  | `in (:list)` 一行             |
+| UPDATE SET | `<set>` + `<if>`                | `#set col = :val,`一行        |
+| 自定义条件 | `<if test="a != null and a > 0">` | `#(a != null && a > 0)`     |
+| XML 转义 | `<` `>` `&` 逐个转义                | CDATA 全包裹，**零转义**           |
+| DB 工具调试 | 挨个删标签、改参数                       | 直接拷贝，`#` 行自动变注释             |
+| 运行时性能 | 原生                              | **完全一致**（启动期翻译）             |
+| 第三方依赖 | —                               | **零**（仅 MyBatis `provided`） |
+
+---
 
 ## 语法速览
-### `:param` - 参数简化
-代替`#{param}`，简化常用写法，如`= :param`、`> :param`、`in (:param)`、`like %:param%`
 
+> 每一段增强语法都能被启动期翻译成等价的原生 MyBatis 结构
 
-###  `#` - 动态条件
-简化 `<if>`、`<where>`
+### `#` — 动态条件（替代 `<if>`/`<where>`）
+
+`#` 从行首标记到行尾，参数为空则自动隐藏
 
 <table>
 <tr>
-<td width="40%" valign="top">
+<td width="46%" valign="top">
 
-**simple-mybatis 🚀**
+**simple-mybatis** 🚀
 
 ```sql
 select * from t_user
@@ -160,32 +87,32 @@ select * from t_user
 # and name = :name
 # and status in (:statusList)
 ```
->1.参数为空自动省略一行   
->2.自动区分判空是判空字符串还是空集合  
->2.`#where` 自动转换成`<where>`   
->3.拷贝到DB软件中直接可运行
-</td>
-<td width="60%" valign="top">
 
-**原生 MyBatis 🐢**
+- 参数为空自动省略整行
+- 自动区分 null / 空串 / 空集合
+- `#where` 展开为 `<where>`，首个条件的 `and`/`or` 自动删除
+
+</td>
+<td width="54%" valign="top">
+
+**原生 MyBatis** 🐢
 
 ```xml
-select * from t_user
 <where>
-    <if test="id != null">
-        and id = #{id}
-    </if>
-    <if test="name != null and name != ''">
-        and name = #{name}
-    </if>
-    <if test="statusList != null
-              and statusList.size() > 0">
-        and status in
-        <foreach collection="statusList" item="i"
-                 open="(" separator="," close=")">
-            #{i}
-        </foreach>
-    </if>
+  <if test="id != null">
+    and id = #{id}
+  </if>
+  <if test="name != null and name != ''">
+    and name = #{name}
+  </if>
+  <if test="statusList != null
+            and statusList.size() > 0">
+    and status in
+    <foreach collection="statusList" item="i"
+             open="(" separator="," close=")">
+      #{i}
+    </foreach>
+  </if>
 </where>
 ```
 
@@ -193,148 +120,97 @@ select * from t_user
 </tr>
 </table>
 
+### `:param` — 占位符简写
 
+`:name` 等价于 `#{name}`，更简洁（不推荐使用mybatis的`${name}`，存在SQL注入风险）。
 
+### `like %:x%` — 通配符自动包装
 
-### `like` - 自动处理`%` 通配符
-简化`<bind>`或 `concat()`
-
-<table>
-<tr>
-<td width="40%" valign="top">
-
-**simple-mybatis 🚀**
+支持 `%:x%` / `:x%` / `%:x` 三种形式，启动期自动展开为 `<bind>` + `like #{...}`，跨数据库安全。
 
 ```sql
-# and name like %:name%    
-# and code like :code%      
-# and tail like %:tail    
+# and name like %:name%    →  <bind> + like #{namePattern}
+# and code like :code%
+# and tail like %:tail
 ```
 
-> 1.语法简单直观   
-> 2.自动转换成 `<bind>` ，跨数据库安全
-
-</td>
-<td width="60%" valign="top">
-
-**原生 MyBatis 🐢**
-
-```xml
-<bind name="namePattern" value="'%' + name + '%'"/>
-<if test="name != null and name != ''">
-    and name like #{namePattern}
-</if>
-<bind name="codePattern" value="code + '%'"/>
-<if test="code != null and code != ''">
-    and code like #{codePattern}
-</if>
-```
-
-</td>
-</tr>
-</table>
-
-### `in` - 自动处理参数
-
-<table>
-<tr>
-<td width="40%" valign="top">
-
-**simple-mybatis 🚀**
+### `in (:list)` — 集合自动展开
 
 ```sql
 # and status in (:statusList)
 ```
 
-一行搞定，null或空集合自动省略整个 IN 条件
+启动期翻译为 `<foreach>`，`null` 或空集合时整个 IN 条件被移除。
 
-</td>
-<td width="60%" valign="top">
+### `#(expr) ...` — 自定义 OGNL 条件
 
-**原生 MyBatis 🐢**
+默认判空覆盖 95% 场景；需要自定义时用括号包裹 OGNL 表达式，等价 `<if test="...">`。
 
-```xml
-<if test="statusList != null
-          and statusList.size() > 0">
-    and status in
-    <foreach collection="statusList" item="i"
-             open="(" separator="," close=")">
-        #{i}
-    </foreach>
-</if>
+```sql
+select * from t_user
+#(id != null && id > 0) where id = :id
+#(type == 'a') and name like %:name%
+#(type == 'b') and status = :status
 ```
-
-</td>
-</tr>
-</table>
-
 
 ### CDATA 全包裹 — 告别 XML 转义
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
-**simple-mybatis**
+原生 MyBatis 里 `<if>` 一旦放进 CDATA 就变成文本；增强语法可以把整段 SQL 用 CDATA 包起来，`<` / `>` / `&` 都不用管。
 
 ```xml
 <select id="find" resultType="User"><![CDATA[
-    select * from t_user
-    where age > 10
-    # and type > :type
+  select * from t_user
+  where age > 10
+  # and type > :type
 ]]></select>
 ```
 
-CDATA 全包裹，不用考虑sql中有特殊字符
+---
 
-</td>
-<td width="50%" valign="top">
+## 工作原理
 
-**原生 MyBatis**
+<p align="center">
+  <img src="./assets/readme/mechanism.svg" width="100%"
+       alt="启动期翻译机制：SQL 源码 → EnhancedLanguageDriver → 原生 MyBatis 语法树 → 运行期 JDBC">
+</p>
+
+- **只在启动期跑一次** — MyBatis 初始化 Mapper 时，`EnhancedLanguageDriver` 将增强语法翻译成标准 `<if>`/`<where>`/`<set>`/`<foreach>`/`<bind>` + `#{}`。翻译结果作为 `SqlSource` 缓存。
+- **运行期是纯原生 MyBatis** — 参数绑定、SQL 组装、PreparedStatement 生成全部走 `XMLLanguageDriver`，与手写 XML 完全一致。**没有反射热路径，没有额外 AST 解析。**
+- **原生语法是超集** — 你的存量 SQL 可以不改一行直接运行；也可以在同一条 SQL 内混用（不推荐）。
+- **可扩展** — 通过 `Directive` SPI + `ServiceLoader`，可以注册自定义 `#xxx` 语法。
+
+---
+
+## 兼容性 & 逃生舱
+
+| 项 | 值 |
+|---|---|
+| Java | 8+ |
+| MyBatis | 3.2.0 ~ 3.5.x（实测 3.5.x，建议 3.4.6+） |
+| 第三方依赖 | 无（仅 MyBatis，`provided`） |
+| 入口 | XML Mapper · `@Select` / `@Update` / `@Insert` / `@Delete` 注解 |
+| 关闭增强 | 单条 SQL 上用 `lang` / `@Lang` 强制走原生解析 |
+
+极少数场景想跳过增强解析（例如 PostgreSQL 特有语法 `col::int` 与 `#(expr)` 冲突），用 MyBatis 官方能力即可：
 
 ```xml
-<select id="find" resultType="User">
-    select * from t_user
-    where age <![CDATA[ > ]]> 10 
-    <if test="type != null">
-      and type <![CDATA[ > ]]> #{type}
-    </if>
+<select id="rawSql" lang="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver">
+  select * from t_user where col::int = #{value}
 </select>
 ```
 
-`<if>` 标签不能用 CDATA 包裹， 特殊字符只能挨个转义
-
-</td>
-</tr>
-</table>
-
----
-
-## 设计理念
-
-- **超集兼容**：完全兼容原生语法，不用增强语法也能运行（甚至可以混用，但不推荐）
-- **启动期翻译**：所有增强语法在 MyBatis 初始化时翻译为标准 `<if>`/`<where>`/`<set>`/`<foreach>`/`<bind>` + `#{}`，运行期与原生 MyBatis 完全一致
-- **行级边界**：`#`动态标记的作用范围是到行尾，简单易懂，
-- **DMS 友好**：`#` 行在数据库工具中被视为注释，SQL 可直接粘贴调试
-- **可扩展**：`Directive` SPI + `ServiceLoader`，支持扩展自定义语法
+```java
+@Lang(XMLLanguageDriver.class)
+@Select("select * from t_user where col::int = #{value}")
+User rawSql(Integer value);
+```
 
 ---
 
-## 兼容性
+## 更多
 
-| 项 | 值                                  |
-|---|------------------------------------|
-| Java | 8+                                 |
-| MyBatis | 3.2.0 ~ 3.5.x（实测 3.5.x，建议 3.4.6+）  |
-| 第三方依赖 | 无（ 仅MyBatis  `provided`）           |
-| 入口 | XML  · `@Select`/`@Update` 注解      |
-| 逃生舱 | 单条语句可用 `lang` / `@Lang` 强制忽略增强语法解析 |
-
----
-
-## 详细语法
-
-完整的语法说明、最佳实践和进阶用法见 **[syntax-guide.md](syntax-guide.md)**。
+- **完整语法手册**：[syntax-guide.md](syntax-guide.md) — 所有语法糖、最佳实践、注解 vs XML、边界行为
+- **反馈 / 建议**：欢迎在 [GitHub Issues](https://github.com/luo-zhan/simple-mybatis/issues) 提出
 
 ## License
 
