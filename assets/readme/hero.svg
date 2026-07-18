@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="1200" height="700" viewBox="0 0 1200 700"
+     width="960" height="700" viewBox="0 0 960 660"
      role="img" aria-labelledby="hero-title hero-desc">
   <title id="hero-title">simple-mybatis — 用 # 一个符号，写完动态 SQL</title>
   <desc id="hero-desc">Before/After 对比：simple-mybatis 8 行 CDATA 语法与原生 MyBatis 21 行完整 XML 标签树的等价改写。</desc>
@@ -12,66 +12,62 @@
   </defs>
 
   <!-- Canvas -->
-  <rect width="1200" height="700" rx="20" fill="#0d1117"/>
+  <rect width="960" height="700" rx="18" fill="#0d1117"/>
 
   <!-- Faint hash motif -->
-  <text x="1075" y="150" font-family="ui-monospace, Menlo, monospace"
-        font-size="160" font-weight="800" fill="#e6edf3" opacity="0.05">#</text>
+  <text x="850" y="160" font-family="ui-monospace, Menlo, monospace"
+        font-size="150" font-weight="800" fill="#e6edf3" opacity="0.05">#</text>
 
   <!-- ===== Top: eyebrow + wordmark + tagline ===== -->
-  <text x="56" y="46" font-family="ui-monospace, Menlo, monospace"
+  <text x="32" y="36" font-family="ui-monospace, Menlo, monospace"
         font-size="12" letter-spacing="2" fill="#8b949e"
         xml:space="preserve">MYBATIS · LANGUAGEDRIVER · v0.1.0</text>
 
-  <text x="56" y="112" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif"
-        font-size="60" font-weight="800" fill="url(#brand)"
+  <text x="32" y="102" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif"
+        font-size="54" font-weight="800" fill="url(#brand)"
         xml:space="preserve">simple<tspan fill="#ff7b72">-</tspan>mybatis</text>
 
-  <text x="56" y="152" font-size="18" fill="#8b949e"
-        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif"
-        xml:space="preserve">把 <tspan font-family="ui-monospace, Menlo, monospace" fill="#d29922">&lt;if&gt;</tspan> / <tspan font-family="ui-monospace, Menlo, monospace" fill="#d29922">&lt;where&gt;</tspan> / <tspan font-family="ui-monospace, Menlo, monospace" fill="#d29922">&lt;foreach&gt;</tspan> / <tspan font-family="ui-monospace, Menlo, monospace" fill="#d29922">&lt;bind&gt;</tspan> 收敛成一个 <tspan font-family="ui-monospace, Menlo, monospace" font-weight="700" fill="#ff7b72">#</tspan> 号，</text>
-
-  <text x="56" y="178" font-size="18" fill="#8b949e"
+  <text x="32" y="140" font-size="17" fill="#8b949e"
         font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif"
         xml:space="preserve">启动期翻译为原生语法，运行期与 MyBatis <tspan fill="#3fb950" font-weight="600">完全一致 · 零额外开销</tspan>。</text>
 
   <!-- Top-right badges -->
   <g font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#e6edf3">
-    <g transform="translate(776 34)">
+    <g transform="translate(560 30)">
       <rect width="72" height="24" rx="6" fill="#161b22" stroke="#30363d"/>
       <text x="36" y="16" text-anchor="middle">Java 8+</text>
     </g>
-    <g transform="translate(856 34)">
-      <rect width="120" height="24" rx="6" fill="#161b22" stroke="#30363d"/>
-      <text x="60" y="16" text-anchor="middle">MyBatis 3.2+ </text>
+    <g transform="translate(640 30)">
+      <rect width="88" height="24" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="44" y="16" text-anchor="middle">MyBatis 3.2+</text>
     </g>
-    <g transform="translate(984 34)">
+    <g transform="translate(736 30)">
       <rect width="86" height="24" rx="6" fill="#161b22" stroke="#30363d"/>
       <text x="43" y="16" text-anchor="middle" fill="#3fb950">Zero deps</text>
     </g>
-    <g transform="translate(1078 34)">
+    <g transform="translate(830 30)">
       <rect width="90" height="24" rx="6" fill="#161b22" stroke="#30363d"/>
       <text x="45" y="16" text-anchor="middle">Apache-2.0</text>
     </g>
   </g>
 
   <!-- Bar labels above cards -->
-  <text x="316" y="212" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
-        font-size="11" fill="#3fb950" letter-spacing="1.8">◀ simple-mybatis · 8 行</text>
-  <text x="894" y="212" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
-        font-size="11" fill="#d29922" letter-spacing="1.8">MyBatis 原生 · 21 行 ▶</text>
+  <text x="200" y="196" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+        font-size="13" fill="#3fb950" letter-spacing="1.8">◀ simple-mybatis · 8 行</text>
+  <text x="668" y="196" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+        font-size="13" fill="#d29922" letter-spacing="1.8">MyBatis 原生 · 21 行 ▶</text>
 
   <!-- ===== Middle: two editor cards ===== -->
 
-  <!-- LEFT — simple-mybatis (short) -->
-  <g transform="translate(56 230)">
-    <rect width="520" height="260" rx="14" fill="#161b22" stroke="#30363d"/>
-    <path d="M0 14 Q0 0 14 0 L506 0 Q520 0 520 14 L520 34 L0 34 Z" fill="#0d1117"/>
-    <circle cx="18" cy="17" r="5" fill="#ff5f57"/>
-    <circle cx="34" cy="17" r="5" fill="#febc2e"/>
-    <circle cx="50" cy="17" r="5" fill="#28c840"/>
-    <text x="72" y="21" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8b949e">UserMapper.xml</text>
-    <g transform="translate(392 8)">
+  <!-- LEFT — simple-mybatis (narrower 336) -->
+  <g transform="translate(32 212)">
+    <rect width="336" height="252" rx="14" fill="#161b22" stroke="#30363d"/>
+    <path d="M0 14 Q0 0 14 0 L322 0 Q336 0 336 14 L336 34 L0 34 Z" fill="#0d1117"/>
+    <circle cx="16" cy="17" r="5" fill="#ff5f57"/>
+    <circle cx="30" cy="17" r="5" fill="#febc2e"/>
+    <circle cx="44" cy="17" r="5" fill="#28c840"/>
+    <text x="60" y="21" font-family="ui-monospace, Menlo, monospace" font-size="11.5" fill="#8b949e">UserMapper.xml</text>
+    <g transform="translate(208 8)">
       <rect width="116" height="18" rx="9" fill="#0d3d1f" stroke="#3fb950"/>
       <text x="58" y="13" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif"
             font-size="11" font-weight="600" text-anchor="middle" fill="#3fb950">simple-mybatis 🚀</text>
@@ -88,41 +84,41 @@
         <text x="42" y="214">7</text>
         <text x="42" y="238">8</text>
       </g>
-      <text x="58" y="70"  fill="#8b949e">&lt;![CDATA[</text>
-      <text x="58" y="94"  fill="#e6edf3">    select * from t_user</text>
-      <text x="58" y="118"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> where id = </tspan><tspan fill="#79c0ff">:id</tspan></text>
-      <text x="58" y="142"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and name like %</tspan><tspan fill="#79c0ff">:name</tspan><tspan fill="#e6edf3">%</tspan></text>
-      <text x="58" y="166"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and age &gt; </tspan><tspan fill="#79c0ff">:minAge</tspan></text>
-      <text x="58" y="190"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and status in (</tspan><tspan fill="#79c0ff">:statusList</tspan><tspan fill="#e6edf3">)</tspan></text>
-      <text x="58" y="214" fill="#e6edf3">    order by id</text>
-      <text x="58" y="238" fill="#8b949e">]]&gt;</text>
+      <text x="58"  y="70"  fill="#8b949e">&lt;![CDATA[</text>
+      <text x="74"  y="94"  fill="#e6edf3">select * from t_user</text>
+      <text x="58"  y="118"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> where id = </tspan><tspan fill="#79c0ff">:id</tspan></text>
+      <text x="58"  y="142"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and name like %</tspan><tspan fill="#79c0ff">:name</tspan><tspan fill="#e6edf3">%</tspan></text>
+      <text x="58"  y="166"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and age &gt; </tspan><tspan fill="#79c0ff">:minAge</tspan></text>
+      <text x="58"  y="190"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and status in (</tspan><tspan fill="#79c0ff">:statusList</tspan><tspan fill="#e6edf3">)</tspan></text>
+      <text x="74"  y="214" fill="#e6edf3">order by id</text>
+      <text x="58"  y="238" fill="#8b949e">]]&gt;</text>
     </g>
   </g>
 
-  <!-- Center equivalence sign -->
-  <g transform="translate(600 350)">
-    <line x1="0" y1="0"  x2="24" y2="0"  stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
-    <line x1="0" y1="10" x2="24" y2="10" stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
-    <line x1="0" y1="20" x2="24" y2="20" stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
-    <text x="12" y="42" font-family="ui-monospace, Menlo, monospace" font-size="9"
-          fill="#8b949e" text-anchor="middle" letter-spacing="1.5">EQUIV.</text>
+  <!-- Center equivalence sign (between the two cards) -->
+  <g transform="translate(378 328)">
+    <line x1="0" y1="0"  x2="20" y2="0"  stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
+    <line x1="0" y1="9"  x2="20" y2="9"  stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
+    <line x1="0" y1="18" x2="20" y2="18" stroke="#8b949e" stroke-width="2" stroke-linecap="round"/>
+    <text x="10" y="38" font-family="ui-monospace, Menlo, monospace" font-size="11"
+          fill="#8b949e" text-anchor="middle" letter-spacing="1.5">等价</text>
   </g>
 
-  <!-- RIGHT — native MyBatis (full expansion, 21 lines, standard 4-space indent) -->
-  <g transform="translate(644 230)">
-    <rect width="500" height="440" rx="14" fill="#161b22" stroke="#30363d"/>
-    <path d="M0 14 Q0 0 14 0 L486 0 Q500 0 500 14 L500 34 L0 34 Z" fill="#0d1117"/>
-    <circle cx="18" cy="17" r="5" fill="#ff5f57"/>
-    <circle cx="34" cy="17" r="5" fill="#febc2e"/>
-    <circle cx="50" cy="17" r="5" fill="#28c840"/>
-    <text x="72" y="21" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8b949e">UserMapper.xml</text>
-    <g transform="translate(376 8)">
+  <!-- RIGHT — native MyBatis (wider 520) -->
+  <g transform="translate(408 212)">
+    <rect width="520" height="440" rx="14" fill="#161b22" stroke="#30363d"/>
+    <path d="M0 14 Q0 0 14 0 L506 0 Q520 0 520 14 L520 34 L0 34 Z" fill="#0d1117"/>
+    <circle cx="16" cy="17" r="5" fill="#ff5f57"/>
+    <circle cx="30" cy="17" r="5" fill="#febc2e"/>
+    <circle cx="44" cy="17" r="5" fill="#28c840"/>
+    <text x="60" y="21" font-family="ui-monospace, Menlo, monospace" font-size="11.5" fill="#8b949e">UserMapper.xml</text>
+    <g transform="translate(396 8)">
       <rect width="112" height="18" rx="9" fill="#3d2c00" stroke="#d29922"/>
       <text x="56" y="13" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif"
             font-size="11" font-weight="600" text-anchor="middle" fill="#d29922">MyBatis 原生 🐢</text>
     </g>
 
-    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5" xml:space="preserve">
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" xml:space="preserve">
       <!-- gutter -->
       <g fill="#484f58" text-anchor="end">
         <text x="42" y="60">1</text>
@@ -148,40 +144,39 @@
         <text x="42" y="420">21</text>
       </g>
 
-      <!-- Indent scale (11.5px mono, ~7px/char): 2sp=14  4sp=28  6sp=42  "<foreach "=63 -->
+      <!-- Indent (13px mono, ~8px/char): 2sp=+16  4sp=+32  6sp=+48  "<foreach "=+72 -->
       <!-- 1: select -->
       <text x="56"  y="60"  fill="#e6edf3">select * from t_user</text>
       <!-- 2: <where> -->
       <text x="56"  y="78"  fill="#d29922">&lt;where&gt;</text>
 
-      <!-- 3-5: id  (if=2sp, body=4sp) -->
-      <text x="70"  y="96"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"id != null"</tspan><tspan fill="#d29922">&gt;</tspan></text>
-      <text x="84"  y="114" fill="#e6edf3">and id = <tspan fill="#79c0ff">#{id}</tspan></text>
-      <text x="70"  y="132" fill="#d29922">&lt;/if&gt;</text>
+      <!-- 3-5: id -->
+      <text x="72"  y="96"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"id != null"</tspan><tspan fill="#d29922">&gt;</tspan></text>
+      <text x="88"  y="114" fill="#e6edf3">and id = <tspan fill="#79c0ff">#{id}</tspan></text>
+      <text x="72"  y="132" fill="#d29922">&lt;/if&gt;</text>
 
       <!-- 6-9: name like -->
-      <text x="70"  y="150"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"name != null and name != ''"</tspan><tspan fill="#d29922">&gt;</tspan></text>
-      <text x="84"  y="168"><tspan fill="#d29922">&lt;bind</tspan><tspan fill="#adbac7"> name=</tspan><tspan fill="#a5d6a7">"p"</tspan><tspan fill="#adbac7"> value=</tspan><tspan fill="#a5d6a7">"'%'+name+'%'"</tspan><tspan fill="#d29922">/&gt;</tspan></text>
-      <text x="84"  y="186" fill="#e6edf3">and name like <tspan fill="#79c0ff">#{p}</tspan></text>
-      <text x="70"  y="204" fill="#d29922">&lt;/if&gt;</text>
+      <text x="72"  y="150"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"name != null and name != ''"</tspan><tspan fill="#d29922">&gt;</tspan></text>
+      <text x="88"  y="168"><tspan fill="#d29922">&lt;bind</tspan><tspan fill="#adbac7"> name=</tspan><tspan fill="#a5d6a7">"p"</tspan><tspan fill="#adbac7"> value=</tspan><tspan fill="#a5d6a7">"'%'+name+'%'"</tspan><tspan fill="#d29922">/&gt;</tspan></text>
+      <text x="88"  y="186" fill="#e6edf3">and name like <tspan fill="#79c0ff">#{p}</tspan></text>
+      <text x="72"  y="204" fill="#d29922">&lt;/if&gt;</text>
 
       <!-- 10-12: age > (needs escape) -->
-      <text x="70"  y="222"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"minAge != null"</tspan><tspan fill="#d29922">&gt;</tspan></text>
-      <text x="84"  y="240"><tspan fill="#e6edf3">and age </tspan><tspan fill="#ff7b72">&amp;gt;</tspan><tspan fill="#e6edf3"> </tspan><tspan fill="#79c0ff">#{minAge}</tspan><tspan fill="#6e7681"> &lt;!-- &gt; 需转义 --&gt;</tspan></text>
-      <text x="70"  y="258" fill="#d29922">&lt;/if&gt;</text>
+      <text x="72"  y="222"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"minAge != null"</tspan><tspan fill="#d29922">&gt;</tspan></text>
+      <text x="88"  y="240"><tspan fill="#e6edf3">and age </tspan><tspan fill="#ff7b72">&amp;gt;</tspan><tspan fill="#e6edf3"> </tspan><tspan fill="#79c0ff">#{minAge}</tspan><tspan fill="#6e7681"> &lt;!-- &gt; 需转义 --&gt;</tspan></text>
+      <text x="72"  y="258" fill="#d29922">&lt;/if&gt;</text>
 
       <!-- 13-19: status in / foreach -->
-      <text x="70"  y="276"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"statusList != null and statusList.size() &amp;gt; 0"</tspan><tspan fill="#d29922">&gt;</tspan></text>
-      <text x="84"  y="294" fill="#e6edf3">and status in</text>
-      <text x="84"  y="312"><tspan fill="#d29922">&lt;foreach</tspan><tspan fill="#adbac7"> collection=</tspan><tspan fill="#a5d6a7">"statusList"</tspan><tspan fill="#adbac7"> item=</tspan><tspan fill="#a5d6a7">"i"</tspan></text>
-      <text x="147" y="330"><tspan fill="#adbac7">open=</tspan><tspan fill="#a5d6a7">"("</tspan><tspan fill="#adbac7"> separator=</tspan><tspan fill="#a5d6a7">","</tspan><tspan fill="#adbac7"> close=</tspan><tspan fill="#a5d6a7">")"</tspan><tspan fill="#d29922">&gt;</tspan></text>
-      <text x="98"  y="348"><tspan fill="#79c0ff">#{i}</tspan></text>
-      <text x="84"  y="366" fill="#d29922">&lt;/foreach&gt;</text>
-      <text x="70"  y="384" fill="#d29922">&lt;/if&gt;</text>
+      <text x="72"  y="276"><tspan fill="#d29922">&lt;if</tspan><tspan fill="#adbac7"> test=</tspan><tspan fill="#a5d6a7">"statusList != null and statusList.size() != 0"</tspan><tspan fill="#d29922">&gt;</tspan></text>
+      <text x="88"  y="294" fill="#e6edf3">and status in</text>
+      <text x="88"  y="312"><tspan fill="#d29922">&lt;foreach</tspan><tspan fill="#adbac7"> collection=</tspan><tspan fill="#a5d6a7">"statusList"</tspan><tspan fill="#adbac7"> item=</tspan><tspan fill="#a5d6a7">"i"</tspan></text>
+      <text x="160" y="330"><tspan fill="#adbac7">open=</tspan><tspan fill="#a5d6a7">"("</tspan><tspan fill="#adbac7"> separator=</tspan><tspan fill="#a5d6a7">","</tspan><tspan fill="#adbac7"> close=</tspan><tspan fill="#a5d6a7">")"</tspan><tspan fill="#d29922">&gt;</tspan></text>
+      <text x="104" y="348"><tspan fill="#79c0ff">#{i}</tspan></text>
+      <text x="88"  y="366" fill="#d29922">&lt;/foreach&gt;</text>
+      <text x="72"  y="384" fill="#d29922">&lt;/if&gt;</text>
 
-      <!-- 20: </where> -->
+      <!-- 20-21 -->
       <text x="56"  y="402" fill="#d29922">&lt;/where&gt;</text>
-      <!-- 21: order by id -->
       <text x="56"  y="420" fill="#e6edf3">order by id</text>
     </g>
   </g>

@@ -1,98 +1,82 @@
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="1200" height="340" viewBox="0 0 1200 340"
+     width="960" height="280" viewBox="0 0 960 280"
      role="img" aria-labelledby="mech-title mech-desc">
   <title id="mech-title">simple-mybatis 启动期翻译机制</title>
   <desc id="mech-desc">SQL 源码在 MyBatis 启动期被 EnhancedLanguageDriver 翻译成原生 &lt;if&gt;/&lt;where&gt;/&lt;foreach&gt;/&lt;bind&gt; 树，运行期与原生 MyBatis 完全一致。</desc>
 
   <!-- Canvas -->
-  <rect width="1200" height="340" rx="20" fill="#0d1117"/>
+  <rect width="960" height="280" rx="18" fill="#0d1117"/>
 
   <!-- Title -->
-  <text x="56" y="46" font-family="ui-monospace, Menlo, monospace"
+  <text x="32" y="36" font-family="ui-monospace, Menlo, monospace"
         font-size="12" letter-spacing="2" fill="#8b949e">HOW IT WORKS · 启动期翻译，运行期原生</text>
-  <text x="56" y="82" font-family="-apple-system, 'PingFang SC', sans-serif"
-        font-size="26" font-weight="700" fill="#e6edf3">增强语法只存在于「启动期」，运行期与原生 MyBatis 完全一致</text>
+  <text x="32" y="72" font-family="-apple-system, 'PingFang SC', sans-serif"
+        font-size="24" font-weight="700" fill="#e6edf3">增强语法只存在于「启动期」，运行期与原生 MyBatis 完全一致</text>
 
-  <!-- Phase separators -->
-  <text x="196" y="130" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
-        font-size="11" fill="#3fb950" letter-spacing="1.5">◀ 你写的</text>
-  <text x="600" y="130" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
-        font-size="11" fill="#d29922" letter-spacing="1.5">启动期 · 只发生一次</text>
-  <text x="1004" y="130" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
-        font-size="11" fill="#79c0ff" letter-spacing="1.5">运行期 · 零额外开销 ▶</text>
+  <!-- Phase separator labels -->
+  <text x="152" y="106" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+        font-size="12" fill="#3fb950" letter-spacing="1.5">◀ 你写的</text>
+  <text x="480" y="106" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+        font-size="12" fill="#d29922" letter-spacing="1.5">启动期 · 只发生一次</text>
+  <text x="808" y="106" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+        font-size="12" fill="#79c0ff" letter-spacing="1.5">运行期 · 零额外开销 ▶</text>
 
   <!-- Stage 1: Source SQL card -->
-  <g transform="translate(56 150)">
-    <rect width="280" height="150" rx="12" fill="#161b22" stroke="#3fb950" stroke-opacity="0.4"/>
+  <g transform="translate(32 122)">
+    <rect width="240" height="138" rx="12" fill="#161b22" stroke="#3fb950" stroke-opacity="0.4"/>
     <text x="14" y="22" font-family="ui-monospace, Menlo, monospace" font-size="10"
           fill="#3fb950" letter-spacing="1.2">SOURCE.XML</text>
-    <g font-family="ui-monospace, Menlo, monospace" font-size="12" xml:space="preserve">
-      <text x="14" y="52" fill="#8b949e">select * from t_user</text>
-      <text x="14" y="72"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> where id = </tspan><tspan fill="#79c0ff">:id</tspan></text>
-      <text x="14" y="92"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and name like %</tspan><tspan fill="#79c0ff">:name</tspan><tspan fill="#e6edf3">%</tspan></text>
-      <text x="14" y="112"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and status in (</tspan><tspan fill="#79c0ff">:list</tspan><tspan fill="#e6edf3">)</tspan></text>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="13" xml:space="preserve">
+      <text x="14" y="50" fill="#8b949e">select * from t_user</text>
+      <text x="14" y="70"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> where id = </tspan><tspan fill="#79c0ff">:id</tspan></text>
+      <text x="14" y="90"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and name like %</tspan><tspan fill="#79c0ff">:name</tspan><tspan fill="#e6edf3">%</tspan></text>
+      <text x="14" y="110"><tspan fill="#ff7b72" font-weight="700">#</tspan><tspan fill="#e6edf3"> and status in (</tspan><tspan fill="#79c0ff">:list</tspan><tspan fill="#e6edf3">)</tspan></text>
     </g>
-    <text x="14" y="138" font-family="-apple-system, 'PingFang SC', sans-serif"
+    <text x="14" y="128" font-family="-apple-system, 'PingFang SC', sans-serif"
           font-size="11" fill="#6e7681">你在 XML / @Select 中写的 SQL</text>
   </g>
 
   <!-- Arrow 1 -->
-  <g transform="translate(346 225)">
-    <line x1="0" y1="0" x2="52" y2="0" stroke="#d29922" stroke-width="2" stroke-linecap="round"/>
-    <polyline points="46,-6 52,0 46,6" fill="none" stroke="#d29922" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(280 195)">
+    <line x1="0" y1="0" x2="32" y2="0" stroke="#d29922" stroke-width="2" stroke-linecap="round"/>
+    <polyline points="26,-6 32,0 26,6" fill="none" stroke="#d29922" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
   <!-- Stage 2: LanguageDriver (translator) -->
-  <g transform="translate(410 150)">
-    <rect width="380" height="150" rx="12" fill="#161b22" stroke="#d29922" stroke-opacity="0.5"/>
+  <g transform="translate(320 122)">
+    <rect width="320" height="138" rx="12" fill="#161b22" stroke="#d29922" stroke-opacity="0.5"/>
     <text x="14" y="22" font-family="ui-monospace, Menlo, monospace" font-size="10"
           fill="#d29922" letter-spacing="1.2">ENHANCED&#160;LANGUAGE&#160;DRIVER</text>
 
-    <!-- gear-like translator icon -->
-    <g transform="translate(50 80)">
-      <circle cx="0" cy="0" r="22" fill="none" stroke="#d29922" stroke-width="1.5"/>
-      <circle cx="0" cy="0" r="6" fill="#d29922"/>
-      <g stroke="#d29922" stroke-width="1.5" stroke-linecap="round">
-        <line x1="0"  y1="-30" x2="0"  y2="-24"/>
-        <line x1="0"  y1="24"  x2="0"  y2="30"/>
-        <line x1="-30" y1="0"  x2="-24" y2="0"/>
-        <line x1="24"  y1="0"  x2="30"  y2="0"/>
-        <line x1="-21" y1="-21" x2="-17" y2="-17"/>
-        <line x1="17"  y1="17"  x2="21"  y2="21"/>
-        <line x1="-21" y1="21"  x2="-17" y2="17"/>
-        <line x1="17"  y1="-17" x2="21"  y2="-21"/>
-      </g>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="12.5" xml:space="preserve" fill="#e6edf3">
+      <text x="14" y="52">1. 扫描 <tspan fill="#ff7b72" font-weight="700">#</tspan> 行 · <tspan fill="#79c0ff">:param</tspan> · like/in 糖</text>
+      <text x="14" y="72">2. 按行推断判空（null / "" / 空集合）</text>
+      <text x="14" y="92">3. 生成 <tspan fill="#d29922">&lt;if&gt;/&lt;where&gt;/&lt;foreach&gt;/&lt;bind&gt;</tspan></text>
+      <text x="14" y="112">4. 交给 <tspan fill="#adbac7">XMLLanguageDriver</tspan> 编译成 SqlSource</text>
     </g>
 
-    <g font-family="ui-monospace, Menlo, monospace" font-size="12" xml:space="preserve" fill="#e6edf3">
-      <text x="94" y="58">1. 扫描 <tspan fill="#ff7b72">#</tspan> 行 · <tspan fill="#79c0ff">:param</tspan> · like/in 糖</text>
-      <text x="94" y="78">2. 按行推断判空条件（null / "" / 空集合）</text>
-      <text x="94" y="98">3. 生成 <tspan fill="#d29922">&lt;if&gt;/&lt;where&gt;/&lt;foreach&gt;/&lt;bind&gt;</tspan></text>
-      <text x="94" y="118">4. 交给 <tspan fill="#adbac7">XMLLanguageDriver</tspan> 编译成 SqlSource</text>
-    </g>
-
-    <text x="14" y="138" font-family="-apple-system, 'PingFang SC', sans-serif"
+    <text x="14" y="128" font-family="-apple-system, 'PingFang SC', sans-serif"
           font-size="11" fill="#6e7681">MyBatis 启动初始化时执行一次，翻译结果被缓存</text>
   </g>
 
   <!-- Arrow 2 -->
-  <g transform="translate(800 225)">
-    <line x1="0" y1="0" x2="52" y2="0" stroke="#79c0ff" stroke-width="2" stroke-linecap="round"/>
-    <polyline points="46,-6 52,0 46,6" fill="none" stroke="#79c0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(648 195)">
+    <line x1="0" y1="0" x2="32" y2="0" stroke="#79c0ff" stroke-width="2" stroke-linecap="round"/>
+    <polyline points="26,-6 32,0 26,6" fill="none" stroke="#79c0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
   <!-- Stage 3: Runtime -->
-  <g transform="translate(864 150)">
-    <rect width="280" height="150" rx="12" fill="#161b22" stroke="#79c0ff" stroke-opacity="0.4"/>
+  <g transform="translate(688 122)">
+    <rect width="240" height="138" rx="12" fill="#161b22" stroke="#79c0ff" stroke-opacity="0.4"/>
     <text x="14" y="22" font-family="ui-monospace, Menlo, monospace" font-size="10"
           fill="#79c0ff" letter-spacing="1.2">RUNTIME · JDBC</text>
-    <g font-family="ui-monospace, Menlo, monospace" font-size="12" xml:space="preserve">
-      <text x="14" y="52" fill="#8b949e">select * from t_user</text>
-      <text x="14" y="72" fill="#e6edf3">where id = <tspan fill="#79c0ff">?</tspan></text>
-      <text x="14" y="92" fill="#e6edf3">  and name like <tspan fill="#79c0ff">?</tspan></text>
-      <text x="14" y="112" fill="#e6edf3">  and status in (<tspan fill="#79c0ff">?, ?</tspan>)</text>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="13" xml:space="preserve">
+      <text x="14" y="50" fill="#8b949e">select * from t_user</text>
+      <text x="14" y="70" fill="#e6edf3">where id = <tspan fill="#79c0ff">?</tspan></text>
+      <text x="14" y="90" fill="#e6edf3">  and name like <tspan fill="#79c0ff">?</tspan></text>
+      <text x="14" y="110" fill="#e6edf3">  and status in (<tspan fill="#79c0ff">?, ?</tspan>)</text>
     </g>
-    <text x="14" y="138" font-family="-apple-system, 'PingFang SC', sans-serif"
-          font-size="11" fill="#6e7681">与原生 MyBatis 生成的 PreparedStatement 完全一致</text>
+    <text x="14" y="128" font-family="-apple-system, 'PingFang SC', sans-serif"
+          font-size="11" fill="#6e7681">与原生 PreparedStatement 完全一致</text>
   </g>
 </svg>
