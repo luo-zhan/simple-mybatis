@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="960" height="700" viewBox="0 0 960 660"
+     width="960" height="700" viewBox="0 0 960 700"
      role="img" aria-labelledby="hero-title hero-desc">
   <title id="hero-title">simple-mybatis — 用 # 一个符号，写完动态 SQL</title>
   <desc id="hero-desc">Before/After 对比：simple-mybatis 8 行 CDATA 语法与原生 MyBatis 21 行完整 XML 标签树的等价改写。</desc>
@@ -29,7 +29,7 @@
 
   <text x="32" y="140" font-size="17" fill="#8b949e"
         font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif"
-        xml:space="preserve">启动期翻译为原生语法，运行期与 MyBatis <tspan fill="#3fb950" font-weight="600">完全一致 · 零额外开销</tspan>。</text>
+        xml:space="preserve">简洁的语法糖，启动期翻译为原生语法，运行期与 MyBatis <tspan fill="#3fb950" font-weight="600">完全一致 · 零额外开销</tspan>。</text>
 
   <!-- Top-right badges -->
   <g font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#e6edf3">
